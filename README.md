@@ -17,7 +17,9 @@ We have provided scripts to execute the code.
 
  # How to execute the unit tests
 test based test cases are executed with the following command from the root folder
-# To run Unit test`npm run test`
+# To run Unit test
+
+`npm run test`
 
 
 # Typescript
