@@ -61,33 +61,51 @@ export class FilesController {
     return buildErrorResponse(responseData);
   }
 
+async uploadFileInfo( files: Array<Express.Multer.File>)
+{
+  // console.log(files);
+  let UniquNameList =[]
+  // await files.forEach(async file => {
+   
 
+  // });
+  for(let i=0;i<files.length;i++){
+    const fileReponse = {
+      originalname: files[i].originalname,
+      filename:  files[i].filename,
+    };
+    let fileTypeList =  files[i].originalname.split('.');
+    let fileType = fileTypeList[fileTypeList.length - 1]
+    let fileName = new Date().getTime().toString();
+    let obj = {
+      originalName:  files[i].originalname,
+      filedName:  files[i].fieldname,
+      fileType: fileType,
+      size:  files[i].size,
+      uniqueId: fileName + '_' +  files[i].originalname
+    }
+    await writeFile('./uploads/' + fileName + '_' +  files[i].originalname,  files[i].buffer, 'base64');
+    let fileSave = await this.FilesService.create(obj);
+    UniquNameList.push({uniqueId:fileSave.uniqueId});
+    console.log()
 
+  }
+  return UniquNameList;
+}
 
   @Post('upload')
   @UseInterceptors(FilesInterceptor('files'))
   async uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
-    // console.log(files);
-
-    files.forEach(async file => {
-      const fileReponse = {
-        originalname: file.originalname,
-        filename: file.filename,
-      };
-      let fileTypeList = file.originalname.split('.');
-      let fileType = fileTypeList[fileTypeList.length - 1]
-      let fileName = new Date().getTime().toString();
-      let obj = {
-        originalName: file.originalname,
-        filedName: file.fieldname,
-        fileType: fileType,
-        size: file.size,
-        uniqueId: fileName + '_' + file.originalname
-      }
-      await writeFile('./uploads/' + fileName + '_' + file.originalname, file.buffer, 'base64');
-      let fileSave = await this.FilesService.create(obj);
-
-    });
+  let UniquNameList = await this.uploadFileInfo(files);
+    console.log('-------',UniquNameList)
+    return {
+      status: {
+        code: 1000,
+        header: 'Success',
+        description: 'Record inserted'
+      },
+      data: UniquNameList
+    }
 
   }
 
