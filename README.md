@@ -22,8 +22,4 @@ test based test cases are executed with the following command from the root fold
 `npm run test`
 
 
-# Typescript
-
-Your main file should be named as `main.ts`.
-
 
